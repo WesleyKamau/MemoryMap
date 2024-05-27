@@ -1,0 +1,24 @@
+{
+  "distances": [
+    {
+      "value": 0.25,
+      "score": 100
+    },
+    {
+      "value": 0.5,
+      "score": 50
+    },
+    {
+      "value": 1,
+      "score": 25
+    },
+    {
+      "value": 2,
+      "score": 15
+    },
+    {
+      "value": 999999999999,
+      "score": 5
+    }
+  ]
+}
