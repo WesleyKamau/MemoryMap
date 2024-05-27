@@ -25,8 +25,8 @@ const customMapStyles = [
 ];
 
 const markerSize = {
-  width: 75 * 0.90, // Adjust the width of the marker
-  height: 120 * 0.90, // Adjust the height of the marker
+  width: 75 , // Adjust the width of the marker
+  height: 120 , // Adjust the height of the marker
 };
 
 function MapView({ onLocationSelected, isVisible, secondMarkerPosition }) {
@@ -87,6 +87,8 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition }) {
             zoom={defaultMapOptions.zoom}
             options={{
               styles: showLandmarks ? customMapStyles : [],
+              mapTypeControl: true,
+              disableDefaultUI: true, // Disable default UI
             }}
             onClick={handleMapClick}
             onZoomChanged={handleZoomChanged}
