@@ -35,17 +35,17 @@ const GameOverScreen = ({score}) => {
       }
     };
   }, []);
-
+  // Add some lovey dovey stuff here.
   // Handle navigation to game screen
   const navigateToGame = () => {
     window.location.reload();
   };
-
+ 
   return (
-    <div ref={vantaRef} className="flex items-center justify-center min-h-screen w-full">
-      <div className="text-center bg-gray-900 bg-opacity-80 rounded-lg p-8">
-        <h1 className="text-white text-6xl mb-8">Thank you for playing!!!</h1>
-        <h3 className="text-white text-3xl">Final Score: {score}</h3>
+    <div ref={vantaRef} className="flex flex-col items-center justify-center min-h-screen w-full">
+      <div className="text-center bg-black bg-opacity-70 p-4 md:p-6 lg:p-8 rounded-lg shadow-lg max-w-[85%]">
+        <h1 className="text-white text-5xl mb-8">Thank you for playing!!!</h1>
+        <h3 className="text-white text-4xl">Final Score: {score}</h3>
         <button onClick={navigateToGame} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-8">
           Play Again
         </button>
