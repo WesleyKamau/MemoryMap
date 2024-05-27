@@ -4,7 +4,7 @@ import scoresData from './scores.json';
 import ToggleLandmarksButton from './ToggleLandmarksButton';
 
 const starImage = "pins/starpin.png"; // Add the path to the star image
-const haileyImages = ["pins/hailey1.png", "pins/hailey2.png", "pins/hailey3.png"]; // Add the path to the star image
+const haileyImages = ["pins/hailey1.png", "pins/hailey2.png", "pins/hailey3.png","pins/om.png"]; // Add the path to the star image
 
 const defaultMapOptions = {
   center: { lat: 39.9612, lng: -82.9988 }, // Columbus, Ohio
@@ -20,6 +20,16 @@ const customMapStyles = [
   {
     featureType: 'transit',
     elementType: 'labels.icon',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'road',
+    elementType: 'labels',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'administrative',
+    elementType: 'labels',
     stylers: [{ visibility: 'off' }],
   },
 ];
