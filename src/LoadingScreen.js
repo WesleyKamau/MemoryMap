@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const LoadingScreen = () => {
   const navigate = useNavigate();
@@ -63,6 +63,11 @@ const LoadingScreen = () => {
           Start!
         </button>
       </div>
+      <Link to="/custom">
+        <button className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300">
+          Create Custom Game
+        </button>
+      </Link>
     </div>
   );
 };

@@ -1,0 +1,25 @@
+#vanta-bg {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .step {
+    text-align: center;
+  }
+  
+  .file-input {
+    display: block;
+    margin: 0 auto;
+    padding: 10px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #f9f9f9;
+    width: 80%;
+    text-align: center;
+  }
+  
+  .file-input:hover {
+    background: #e9e9e9;
+  }
+  

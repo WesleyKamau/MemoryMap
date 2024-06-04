@@ -25,14 +25,14 @@ function Game() {
   };
 
   useEffect(() => {
-    const audio = new Audio('music.mp3');
+    let audio = new Audio('music.mp3');
     audio.loop = true; // Loop the music
     audio.volume = 0; // Start volume at 0
 
     const increaseVolume = () => {
       let volume = 0;
       const interval = setInterval(() => {
-        volume += 0.005; // Increase volume by 0.005 every second
+        volume += 0.004; // Increase volume by 0.004 every second
         if (volume >= 0.3) {
           volume = 0.3;
           clearInterval(interval);
@@ -41,11 +41,29 @@ function Game() {
       }, 1000);
     };
 
-    setTimeout(() => {
-      audio.play();
-      increaseVolume();
-    }, 25000); // 25 seconds delay
+    const playAudio = () => {
+      audio.play().then(() => {
+        increaseVolume();
+      }).catch(error => {
+        console.error('Audio playback failed:', error);
+      });
+    };
 
+    // Attach event listener for user interaction
+    const handleUserInteraction = () => {
+      playAudio();
+      document.removeEventListener('click', handleUserInteraction);
+    };
+
+    document.addEventListener('click', handleUserInteraction);
+
+    return () => {
+      if (audio) {
+        audio.pause();
+        audio = null;
+      }
+      document.removeEventListener('click', handleUserInteraction);
+    };
   }, []);
 
   const calculateScore = () => {
@@ -153,7 +171,7 @@ function Game() {
             positionClasses={isMapView ? 'absolute top-4 right-4 md:absolute md:top-4 md:left-1/2 md:transform md:-translate-x-1/2' : 'absolute top-4 left-1/2 transform -translate-x-1/2'} 
           />
           <div style={{ position: 'relative', width: '100%', height: '100%' }}> {/* Adjust height as needed */}
-            <ImageView image={currentLevelData} isVisible={!isMapView} />
+            <ImageView image={currentLevelData.filename} isVisible={!isMapView} />
             <MapView onLocationSelected={setSelectedLocation} secondMarkerPosition={secondMarkerPosition} isVisible={isMapView} />
           </div>
           {!guessSubmitted && <SwitchViewButton onClick={switchView} />}

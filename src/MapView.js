@@ -34,9 +34,9 @@ const markerSize = {
   height: 120 , // Adjust the height of the marker
 };
 
-function MapView({ onLocationSelected, isVisible, secondMarkerPosition }) {
+function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustomGame}) {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'AIzaSyBmfLP9sgBKPICEdBpewcpaV9cqdHoNghA',
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
 
   const [showLandmarks, setShowLandmarks] = useState(true);
@@ -47,11 +47,16 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition }) {
   const mapRef = useRef(null);
 
   useEffect(() => {
-    if (secondMarkerPosition === null) {
+    console.log("Second Marker Position: ", secondMarkerPosition);
+    if (secondMarkerPosition === null || secondMarkerPosition === undefined) {
       setMarkerPosition(null);
       setShowPath(false);
     } else {
       setShowPath(true);
+    }
+
+    if(isCustomGame === undefined){
+      isCustomGame = false;
     }
   }, [secondMarkerPosition]);
 
@@ -81,7 +86,7 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition }) {
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative', zIndex: '0', display: isVisible ? 'block' : 'none' }}>
-      {!showPath && (
+      {!showPath && !isCustomGame &&  (
         <ToggleLandmarksButton onClick={toggleLandmarks}  showLandmarks={showLandmarks}/>
       )}
       {isLoaded ? (
@@ -116,6 +121,7 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition }) {
                     url: starImage,
                     scaledSize: markerSize, // Set the size of the marker
                   }}
+                  key={secondMarkerPosition}
                 />
                 <Polyline
                   path={[markerPosition, secondMarkerPosition]}
