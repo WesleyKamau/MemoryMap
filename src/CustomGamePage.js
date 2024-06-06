@@ -10,6 +10,7 @@ import CustomizationStep from './CustomizationStep';
 import ExifReader from 'exifreader';
 import CustomLevelProgress from './CustomLevelProgress';
 import axios from 'axios';
+import CopyLinkStep from './CopyLinkStep';
 
 const CustomGamePage = () => {
   const [step, setStep] = useState(1);
@@ -24,6 +25,7 @@ const CustomGamePage = () => {
   const navigate = useNavigate();
   const vantaRef = useRef(null);
   let hasNullLocation = false;
+  const [customLink, setCustomLink] = useState(null); // Use state variable
 
   useEffect(() => {
     const loadVanta = () => {
@@ -155,9 +157,10 @@ const CustomGamePage = () => {
         }
       });
   
-      const { gameId } = response.data;
-      console.log(`Custom link: /custom-link/${gameId}`);
-      navigate(`/custom-link/${gameId}`);
+      console.log('Game created:', response.data); 
+      console.log(response.data)
+      setCustomLink(response.data); 
+      nextStep();
     } catch (error) {
       console.error('Error creating game:', error);
     }
@@ -218,6 +221,18 @@ const CustomGamePage = () => {
           //   setVantaColor={setVantaColor}
           //   handleCreateGame={handleCreateGame}
           // />
+        );
+      case 4: // 3. Add a new case for the CopyLinkStep
+        return (
+          <div ref={vantaRef} className="flex flex-col items-center justify-center min-h-screen w-full">
+            <div className="bg-gray-900 bg-opacity-50 rounded-lg p-6 w-full max-w-3xl">
+              <ProgressBar step={step} />
+              <CopyLinkStep data={customLink} /> {/* Pass data to the CopyLinkStep */}
+              <button onClick={prevStep} className="px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition duration-300 mt-4">
+                Back
+              </button>
+            </div>
+          </div>
         );
       default:
         // Do Nothing
