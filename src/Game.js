@@ -9,7 +9,7 @@ import data from './images.json';
 import GameOverScreen from './GameOverScreen'; // Import the GameOverScreen component
 import scoreData from './scores.json'; // Import the JSON file
 
-function Game() {
+function Game({custom}) {
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(0); // State for the current level
   const [isMapView, setIsMapView] = useState(false); // State for toggling between image and map views
