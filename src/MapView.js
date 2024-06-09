@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleMap, Marker, Polyline, useJsApiLoader, Circle, OverlayView } from '@react-google-maps/api';
 import scoresData from './scores.json';
-import ToggleLandmarksButton from './ToggleLandmarksButton';
+import ToggleLandmarksButton from './ui/ToggleLandmarksButton';
 
 const starImage = "pins/starpin.png"; // Add the path to the star image
 const haileyImages = ["pins/hailey1.png", "pins/hailey2.png", "pins/hailey3.png"]; // Add the path to the star image

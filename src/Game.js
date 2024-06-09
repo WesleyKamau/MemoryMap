@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Scoreboard from './Scoreboard';
-import SwitchViewButton from './SwitchViewButton';
-import SubmitGuessButton from './SubmitGuessButton';
-import ContinueButton from './ContinueButton';
+import SwitchViewButton from './ui/SwitchViewButton';
+import SubmitGuessButton from './ui/SubmitGuessButton';
+import ContinueButton from './ui/ContinueButton';
 import ImageView from './ImageView';
 import MapView from './MapView';
 import data from './images.json';

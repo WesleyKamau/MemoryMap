@@ -1,28 +1,30 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Game from './Game';
-import CustomGamePage from './CustomGamePage';
+import CustomGamePage from './custom/CustomGamePage';
 import LoadingScreen from './LoadingScreen';
 import './App.css';
 
-function App() {
-  return (
-    <Router basename="/anniversary">
-      <Routes>
-        <Route path="/" element={<LoadingScreen />} />
-        <Route path="game/" element={<GameWrapper />} />
-        <Route path="custom/" element={<CustomGamePage />} />
-      </Routes>
-    </Router>
-  );
-}
-
-function GameWrapper() {
+function AppRoutes() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const custom = params.get('custom');
 
-  return <Game custom={custom} />;
+  return (
+    <Routes>
+      <Route path="/" element={<LoadingScreen custom={custom} />} />
+      <Route path="game/" element={<Game custom={custom} />} />
+      <Route path="custom/" element={<CustomGamePage />} />
+    </Routes>
+  );
+}
+
+function App() {
+  return (
+    <Router basename="/anniversary">
+      <AppRoutes />
+    </Router>
+  );
 }
 
 export default App;
