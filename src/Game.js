@@ -8,6 +8,8 @@ import MapView from './MapView';
 import data from './images.json';
 import GameOverScreen from './GameOverScreen'; // Import the GameOverScreen component
 import scoreData from './scores.json'; // Import the JSON file
+import axios from 'axios';
+import { Buffer } from 'buffer';
 
 function Game({custom}) {
   const [score, setScore] = useState(0);
@@ -17,54 +19,94 @@ function Game({custom}) {
   const [selectedLocation, setSelectedLocation] = useState(null); // State to store selected location from MapView
   const [secondMarkerPosition, setSecondMarkerPosition] = useState(null);
   const [isGameOver, setGameOver] = useState(false); // Track game over state
-
-  const currentLevelData = data[level];
+  const [gameData, setGameData] = useState(null);
+  const [currentLevelData, setCurrentLevelData] = useState(null);
+  const [currentImage, setCurrentImage] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const switchView = () => {
     setIsMapView(prevIsMapView => !prevIsMapView); // Toggle between image and map views
   };
 
+
   useEffect(() => {
-    let audio = new Audio('music.mp3');
-    audio.loop = true; // Loop the music
-    audio.volume = 0; // Start volume at 0
-
-    const increaseVolume = () => {
-      let volume = 0;
-      const interval = setInterval(() => {
-        volume += 0.004; // Increase volume by 0.004 every second
-        if (volume >= 0.3) {
-          volume = 0.3;
-          clearInterval(interval);
-        }
-        audio.volume = volume;
-      }, 1000);
-    };
-
-    const playAudio = () => {
-      audio.play().then(() => {
-        increaseVolume();
-      }).catch(error => {
-        console.error('Audio playback failed:', error);
-      });
-    };
-
-    // Attach event listener for user interaction
-    const handleUserInteraction = () => {
-      playAudio();
-      document.removeEventListener('click', handleUserInteraction);
-    };
-
-    document.addEventListener('click', handleUserInteraction);
-
-    return () => {
-      if (audio) {
-        audio.pause();
-        audio = null;
+    const fetchData = async () => {
+      try {
+        // Make API call to retrieve game data
+        const response = await axios.get(`http://localhost:8080/game/${custom}`);
+        // Assuming the server responds with the game object
+        const receivedGameData = response.data;
+        console.log("received", receivedGameData);
+        return receivedGameData.images;
+      } catch (error) {
+        console.error('Error fetching game data:', error);
       }
-      document.removeEventListener('click', handleUserInteraction);
     };
-  }, []);
+
+    const initializeData = async () => {
+      if (custom == null || custom == undefined) {
+        console.log("custom is null or undefined");
+        setGameData(data);
+        setCurrentLevelData(data[level]);
+        
+      } else {
+        const fetchedGameData = await fetchData();
+        console.log("fetched", fetchedGameData);
+        setGameData(fetchedGameData);
+        if (fetchedGameData && fetchedGameData[level]) {
+          // const imageData = await getImage(fetchedGameData[level].fileId);
+          setCurrentLevelData(fetchedGameData[level]);
+          setCurrentImage("http://localhost:8080/image/" + fetchedGameData[level].fileId);
+        }
+        console.log("custom is not null or undefined");
+      }
+      setLoading(false);
+    };
+
+    initializeData();
+  }, [custom, data, level]);
+
+  // useEffect(() => {
+  //   let audio = new Audio('music.mp3');
+  //   audio.loop = true; // Loop the music
+  //   audio.volume = 0; // Start volume at 0
+
+  //   const increaseVolume = () => {
+  //     let volume = 0;
+  //     const interval = setInterval(() => {
+  //       volume += 0.004; // Increase volume by 0.004 every second
+  //       if (volume >= 0.3) {
+  //         volume = 0.3;
+  //         clearInterval(interval);
+  //       }
+  //       audio.volume = volume;
+  //     }, 1000);
+  //   };
+
+  //   const playAudio = () => {
+  //     audio.play().then(() => {
+  //       increaseVolume();
+  //     }).catch(error => {
+  //       console.error('Audio playback failed:', error);
+  //     });
+  //   };
+
+  //   // Attach event listener for user interaction
+  //   const handleUserInteraction = () => {
+  //     playAudio();
+  //     document.removeEventListener('click', handleUserInteraction);
+  //   };
+
+  //   document.addEventListener('click', handleUserInteraction);
+
+  //   return () => {
+  //     if (audio) {
+  //       audio.pause();
+  //       audio = null;
+  //     }
+  //     document.removeEventListener('click', handleUserInteraction);
+  //   };
+  // }, []);
 
   const calculateScore = () => {
     if (selectedLocation) {
@@ -133,7 +175,7 @@ function Game({custom}) {
 
   const continueToNextLevel = () => {
     // If there are more levels, increment the level state
-    if (level < data.length - 1) {
+    if (level < gameData.length - 1) {
       setLevel(prevLevel => prevLevel + 1);
       setIsMapView(false); // Reset view to image
       setGuessSubmitted(false); // Reset guessSubmitted state
@@ -159,24 +201,30 @@ function Game({custom}) {
 
   return (
     <div style={{ width: '100%', height: '100%' }}> {/* Set parent div dimensions */}
-      {isGameOver ? (
-        // Render GameOverScreen component if game is over
-        <GameOverScreen score={score} />
+      {loading ? (
+          <div>Loading...</div>
       ) : (
         <>
-          <Scoreboard 
-            score={score} 
-            level={level} 
-            totalLevels={data.length} 
-            positionClasses={isMapView ? 'absolute top-4 right-4 md:absolute md:top-4 md:left-1/2 md:transform md:-translate-x-1/2' : 'absolute top-4 left-1/2 transform -translate-x-1/2'} 
-          />
-          <div style={{ position: 'relative', width: '100%', height: '100%' }}> {/* Adjust height as needed */}
-            <ImageView image={currentLevelData.filename} isVisible={!isMapView} />
-            <MapView onLocationSelected={setSelectedLocation} secondMarkerPosition={secondMarkerPosition} isVisible={isMapView} />
-          </div>
-          {!guessSubmitted && <SwitchViewButton onClick={switchView} />}
-          {!guessSubmitted && <SubmitGuessButton onClick={submitGuess} />}
-          {guessSubmitted && <ContinueButton onClick={continueToNextLevel} />}
+          {isGameOver ? (
+            // Render GameOverScreen component if game is over
+            <GameOverScreen score={score} />
+          ) : (
+            <>
+              <Scoreboard 
+                score={score} 
+                level={level} 
+                totalLevels={gameData.length} 
+                positionClasses={isMapView ? 'absolute top-4 right-4 md:absolute md:top-4 md:left-1/2 md:transform md:-translate-x-1/2' : 'absolute top-4 left-1/2 transform -translate-x-1/2'} 
+              />
+              <div style={{ position: 'relative', width: '100%', height: '100%' }}> {/* Adjust height as needed */}
+                <ImageView image={"http://localhost:8080/image/" + gameData[level].fileId} isVisible={!isMapView} />
+                <MapView onLocationSelected={setSelectedLocation} secondMarkerPosition={secondMarkerPosition} isVisible={isMapView} />
+              </div>
+              {!guessSubmitted && <SwitchViewButton onClick={switchView} />}
+              {!guessSubmitted && <SubmitGuessButton onClick={submitGuess} />}
+              {guessSubmitted && <ContinueButton onClick={continueToNextLevel} />}
+            </>
+          )}
         </>
       )}
     </div>

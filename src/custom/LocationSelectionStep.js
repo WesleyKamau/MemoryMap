@@ -48,18 +48,18 @@ const LocationSelectionStep = ({ metadata, setMetadata, completeStep }) => {
 
 
   return (
-    <div style={{ width: '100%', height: '100%' }}> {/* Set parent div dimensions */}
-        <CustomLevelProgress 
-                index={currentIndex} 
-                length={metadata.length}
-                positionClasses={'absolute top-4 right-4 md:absolute md:top-4 md:left-1/2 md:transform md:-translate-x-1/2' }
-                />
-          <div style={{ position: 'relative', width: '100%', height: '100%' }}> {/* Adjust height as needed */}
-            <ImageView image={URL.createObjectURL(metadata[currentIndex].file)} isVisible={!isMapView} />
-            <MapView onLocationSelected={setSelectedLocation}  isVisible={isMapView} />
-          </div>
-            <SwitchViewButton onClick={switchView} />
-            <SubmitGuessButton onClick={handleSubmit} />
+    <div style={{ width: '100vw', height: '100vh' }}> {/* Set parent div dimensions */}
+      <CustomLevelProgress 
+        index={currentIndex} 
+        length={metadata.length}
+        positionClasses={isMapView ? 'absolute top-4 right-4 md:absolute md:top-4 md:left-1/2 md:transform md:-translate-x-1/2' : 'absolute top-4 left-1/2 transform -translate-x-1/2' }
+      />
+      <div style={{ position: 'relative', width: '100vw', height: '100vh' }}> {/* Adjust height as needed */}
+        <ImageView image={URL.createObjectURL(metadata[currentIndex].file)} isVisible={!isMapView} />
+        <MapView onLocationSelected={setSelectedLocation}  isVisible={isMapView} />
+      </div>
+        <SwitchViewButton onClick={switchView} />
+        <SubmitGuessButton onClick={handleSubmit} />
     </div>
   );
 };

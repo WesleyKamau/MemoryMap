@@ -222,7 +222,7 @@ const CustomGamePage = () => {
         );
       case 2:
         return (
-              <div className="z-10">
+              <div>
                 <LocationSelectionStep
                 metadata={metadata}
                 setMetadata={setMetadata}
@@ -272,17 +272,15 @@ const CustomGamePage = () => {
     }
   };
 
-  if(showMap) {
-    return (
-        renderStep()
-    );
-  } else {
-    return (
-      <div ref={vantaRef} className="flex flex-col items-center justify-center min-h-screen w-full h-full">
-        {renderStep()}
+
+  return (
+    <>
+      {step !== 2 && <div ref={vantaRef} className="absolute flex flex-col items-center justify-center min-h-screen w-full h-full -z-50"></div>}
+      <div className="flex flex-col items-center justify-center min-h-screen w-full h-full z-10">
+          {renderStep()}
       </div>
-    );
-  }
+    </>
+  );  
 
 };
 
