@@ -9,12 +9,13 @@ const LoadingScreen = ({ custom }) => {
   const [loading, setLoading] = useState(true);
   const [gameData, setGameData] = useState(null);
   const [vantaEffect, setVantaEffect] = useState([0xff0077,0x841e10,0xff00d1]);
+  const [menuMessage, setMenuMessage] = useState("Loading...");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Make API call to retrieve game data
-        const response = await axios.get(`http://localhost:8080/game/${custom}`);
+        const response = await axios.get(`https://memorymap-4ed7565da8e8.herokuapp.com/game/${custom}`);
         // Assuming the server responds with the game object
         const receivedGameData = response.data;
         // Update state with received game data
@@ -31,6 +32,10 @@ const LoadingScreen = ({ custom }) => {
 
     fetchData();
     console.log("custom", custom)
+  }, []);
+
+
+  useEffect(() => {
     const loadVanta = () => {
       if (window.VANTA) {
         window.VANTA.FOG({
@@ -87,15 +92,17 @@ const LoadingScreen = ({ custom }) => {
         ) : (
         <>
           <h1 className="text-white text-4xl md:text-6xl lg:text-8xl font-bold mb-4 md:mb-6 lg:mb-8 text-center px-2">
-            Hailey's Anniversary Game
+          {custom ? 
+            "Memory Map" : 
+            "Hailey's Anniverary Game!"
+          }
           </h1>
           
           <div className="text-center bg-black bg-opacity-70 p-4 md:p-6 lg:p-8 rounded-lg shadow-lg max-w-[85%]">
             <h2 className="text-white text-lg md:text-2xl lg:text-4xl mb-4">
-              {custom ? (
-                gameData.menuMessage
-              ) : (
-                <>
+            {custom ? 
+              gameData.menuMessage  : 
+              <>
                 This game was created for our 2 year anniversary. <br />
                 I wanted to make a fun game to capture some of our memories together. <br />
                 You'll first be shown a photo, then you can switch between views to select where the photo was taken on the map. <br />
@@ -103,8 +110,8 @@ const LoadingScreen = ({ custom }) => {
                 I'm working on making this game publicly available, where you can submit your own photos and share a link to a custom game. <br />
                 For now, check it out! <br /> Press the button below to start.
                 <br /> - <i>Wesley</i>
-                </>
-              )}
+              </>
+            }
             </h2>
             <button
               onClick={handleStart}

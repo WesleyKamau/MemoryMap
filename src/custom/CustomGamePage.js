@@ -139,7 +139,7 @@ const CustomGamePage = () => {
   
     try {
       console.log('Sending form data to server');
-      const response = await axios.post('http://localhost:8080/upload', formData, {
+      const response = await axios.post('https://memorymap-4ed7565da8e8.herokuapp.com/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

@@ -1,6 +1,6 @@
 {
-  "homepage": "https://wesleykamau.com/anniversary/",
-  "name": "geoguesser-anniversary",
+  "homepage": "https://wesleykamau.com/memorymap/",
+  "name": "memorymap",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

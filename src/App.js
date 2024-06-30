@@ -21,7 +21,7 @@ function AppRoutes() {
 
 function App() {
   return (
-    <Router basename="/anniversary">
+    <Router basename="/memorymap">
       <AppRoutes />
     </Router>
   );
