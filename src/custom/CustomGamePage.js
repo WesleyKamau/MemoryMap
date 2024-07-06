@@ -16,6 +16,7 @@ const CustomGamePage = () => {
   const [images, setImages] = useState([]);
   const [metadata, setMetadata] = useState([]);
   const [loadingMessage, setLoadingMessage] = useState('');
+  const [creator, setCreator] = useState('');
   const [vantaHighlight, setVantaHighlight] = useState(process.env.REACT_APP_VANTA_HIGHLIGHT);
   const [vantaMidtone, setVantaMidtone] = useState(process.env.REACT_APP_VANTA_MIDTONE);
   const [vantaLowlight, setVantaLowlight] = useState(process.env.REACT_APP_VANTA_LOWLIGHT);
@@ -135,6 +136,7 @@ const CustomGamePage = () => {
   
     formData.append('vantaColors', JSON.stringify([vantaHighlight, vantaMidtone, vantaLowlight]));
     formData.append('menuMessage', loadingMessage);
+    formData.append('creator', creator);
     formData.append('metadata', JSON.stringify(metadataArray));
   
     try {
@@ -235,8 +237,8 @@ const CustomGamePage = () => {
               <div className="bg-gray-900 bg-opacity-50 rounded-lg p-6 w-full max-w-3xl">
                   <ProgressBar step={step} />
                   <CustomizationStep
-                  loadingMessage={loadingMessage}
                   setLoadingMessage={setLoadingMessage}
+                  setCreator={setCreator}
                   vantaHighlight={vantaHighlight}
                   setVantaHighlight={setVantaHighlight}
                   vantaMidtone={vantaMidtone}
@@ -275,7 +277,7 @@ const CustomGamePage = () => {
 
   return (
     <>
-      {step !== 2 && <div ref={vantaRef} className="absolute flex flex-col items-center justify-center min-h-screen w-full h-full -z-50"></div>}
+      <div ref={vantaRef} className="absolute flex flex-col items-center justify-center min-h-screen w-full h-full -z-50"></div>
       <div className="flex flex-col items-center justify-center min-h-screen w-full h-full z-10">
           {renderStep()}
       </div>

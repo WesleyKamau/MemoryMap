@@ -19,7 +19,7 @@ function Game({custom}) {
   const [selectedLocation, setSelectedLocation] = useState(null); // State to store selected location from MapView
   const [secondMarkerPosition, setSecondMarkerPosition] = useState(null);
   const [isGameOver, setGameOver] = useState(false); // Track game over state
-  const [gameData, setGameData] = useState(null);
+  const [gameData, setGameData] = useState(data);
   const [currentLevelData, setCurrentLevelData] = useState(null);
   const [currentImage, setCurrentImage] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,43 +28,19 @@ function Game({custom}) {
     setIsMapView(prevIsMapView => !prevIsMapView); // Toggle between image and map views
   };
 
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Make API call to retrieve game data
-        const response = await axios.get(`http://localhost:8080/game/${custom}`);
-        // Assuming the server responds with the game object
-        const receivedGameData = response.data;
-        console.log("received", receivedGameData);
-        return receivedGameData.images;
-      } catch (error) {
-        console.error('Error fetching game data:', error);
-      }
-    };
+    if( custom ) {
+      setGameData(custom.images);
+      setCurrentLevelData(custom.images[level]);
+      setCurrentImage("https://memorymap-4ed7565da8e8.herokuapp.com/image/" + custom.images[level].fileId);
+    } else {
+      setGameData(data);
+      setCurrentLevelData(data[level]);
+      setCurrentImage(data[level].filename);
+    }
+  }, []);
 
-    const initializeData = async () => {
-      if (custom == null || custom == undefined) {
-        console.log("custom is null or undefined");
-        setGameData(data);
-        setCurrentLevelData(data[level]);
-        
-      } else {
-        const fetchedGameData = await fetchData();
-        console.log("fetched", fetchedGameData);
-        setGameData(fetchedGameData);
-        if (fetchedGameData && fetchedGameData[level]) {
-          // const imageData = await getImage(fetchedGameData[level].fileId);
-          setCurrentLevelData(fetchedGameData[level]);
-          setCurrentImage("http://localhost:8080/image/" + fetchedGameData[level].fileId);
-        }
-        console.log("custom is not null or undefined");
-      }
-      setLoading(false);
-    };
-
-    initializeData();
-  }, [custom, data, level]);
+  
 
   // useEffect(() => {
   //   let audio = new Audio('music.mp3');
@@ -181,6 +157,15 @@ function Game({custom}) {
       setGuessSubmitted(false); // Reset guessSubmitted state
       setSelectedLocation(null);
       setSecondMarkerPosition(null);
+      if( custom ) {
+        setGameData(custom.images);
+        setCurrentLevelData(custom.images[level]);
+        setCurrentImage("https://memorymap-4ed7565da8e8.herokuapp.com/image/" + custom.images[level].fileId);
+      } else {
+        setGameData(data);
+        setCurrentLevelData(data[level]);
+        setCurrentImage(data[level].filename);
+      }
     } else {
       gameOver(); // Call gameOver function if there are no more levels
     }
@@ -200,35 +185,30 @@ function Game({custom}) {
   };
 
   return (
-    <div style={{ width: '100%', height: '100%' }}> {/* Set parent div dimensions */}
-      {loading ? (
-          <div>Loading...</div>
-      ) : (
-        <>
-          {isGameOver ? (
-            // Render GameOverScreen component if game is over
-            <GameOverScreen score={score} />
-          ) : (
-            <>
-              <Scoreboard 
-                score={score} 
-                level={level} 
-                totalLevels={gameData.length} 
-                positionClasses={isMapView ? 'absolute top-4 right-4 md:absolute md:top-4 md:left-1/2 md:transform md:-translate-x-1/2' : 'absolute top-4 left-1/2 transform -translate-x-1/2'} 
-              />
-              <div style={{ position: 'relative', width: '100%', height: '100%' }}> {/* Adjust height as needed */}
-                <ImageView image={"http://localhost:8080/image/" + gameData[level].fileId} isVisible={!isMapView} />
-                <MapView onLocationSelected={setSelectedLocation} secondMarkerPosition={secondMarkerPosition} isVisible={isMapView} />
-              </div>
-              {!guessSubmitted && <SwitchViewButton onClick={switchView} />}
-              {!guessSubmitted && <SubmitGuessButton onClick={submitGuess} />}
-              {guessSubmitted && <ContinueButton onClick={continueToNextLevel} />}
-            </>
-          )}
-        </>
+    <div style={{ width: '100vw', height: '100vh' }}> {/* Set parent div dimensions */}
+      {isGameOver ? (
+        // Render GameOverScreen component if game is over
+          <GameOverScreen score={score} custom={custom}/>
+        ) : (
+          <>
+            <Scoreboard 
+              score={score} 
+              level={level} 
+              totalLevels={gameData.length} 
+              positionClasses={isMapView ? 'absolute top-4 right-4 md:absolute md:top-4 md:left-1/2 md:transform md:-translate-x-1/2' : 'absolute top-4 left-1/2 transform -translate-x-1/2'} 
+            />
+            <div style={{ position: 'relative', width: '100%', height: '100%' }}> {/* Adjust height as needed */}
+              <ImageView image={currentImage} isVisible={!isMapView} />
+              <MapView onLocationSelected={setSelectedLocation} secondMarkerPosition={secondMarkerPosition} isVisible={isMapView} />
+            </div>
+            {!guessSubmitted && <SwitchViewButton onClick={switchView} />}
+            {!guessSubmitted && <SubmitGuessButton onClick={submitGuess} />}
+            {guessSubmitted && <ContinueButton onClick={continueToNextLevel} />}
+          </>
       )}
     </div>
   );
 }
+
 
 export default Game;

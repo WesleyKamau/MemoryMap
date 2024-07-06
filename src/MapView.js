@@ -85,7 +85,7 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustom
   };
 
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative', zIndex: '0', display: isVisible ? 'block' : 'none' }}>
+    <div style={{ width: '100vw', height: '100vh', position: 'relative', zIndex: '0', display: isVisible ? 'block' : 'none' }}>
       {!showPath && !isCustomGame &&  (
         <ToggleLandmarksButton onClick={toggleLandmarks}  showLandmarks={showLandmarks}/>
       )}
