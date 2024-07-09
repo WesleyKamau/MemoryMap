@@ -1,20 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useRef } from 'react';
 
-const GameOverScreen = ({score, custom}) => {
+const GameOverScreen = ({score, colors}) => {
   const vantaRef = useRef(null);
-  const navigate = useNavigate();
-  const [vantaEffect, setVantaEffect] = useState([0xff0077,0x841e10,0xff00d1]);
-  const [menuMessage, setMenuMessage] = useState("Loading...");
 
   useEffect(() => {
-    if (custom) {
-      setVantaEffect(custom.vantaColors);
-    }
-  }, []);
 
-  useEffect(() => {
+    console.log(colors)
     const loadVanta = () => {
       if (window.VANTA) {
         window.VANTA.FOG({
@@ -24,9 +15,9 @@ const GameOverScreen = ({score, custom}) => {
           gyroControls: false,
           minHeight: 200.00,
           minWidth: 200.00,
-          highlightColor: vantaEffect[0],
-          midtoneColor: vantaEffect[1],
-          lowlightColor: vantaEffect[2],
+          highlightColor: colors[0],
+          midtoneColor: colors[1],
+          lowlightColor: colors[2],
         });
       }
     };
@@ -45,7 +36,7 @@ const GameOverScreen = ({score, custom}) => {
         vantaRef.current.vantaEffect.destroy();
       }
     };
-  }, [vantaEffect]);
+  });
 
   // Add some lovey dovey stuff here.
   // Handle navigation to game screen
@@ -59,7 +50,7 @@ const GameOverScreen = ({score, custom}) => {
         <h1 className="text-white text-5xl mb-8">Thank you for playing!!!</h1>
         <h3 className="text-white text-4xl">Final Score: {score}</h3>
         <button onClick={navigateToGame} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-8"
-        style={{ backgroundColor: `${vantaEffect[0].toString(16)}` }}>
+        style={{ backgroundColor: `${colors[1].toString(16)}` }}>
           Play Again
         </button>
       </div>

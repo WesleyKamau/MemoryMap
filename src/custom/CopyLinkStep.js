@@ -5,12 +5,7 @@ import CopyText from '../ui/CopyText';
 const CopyLinkStep = ({ data }) => {
   // Implement component logic here
   const generateLink = () => {
-    return `http://localhost:3000/memorymap?custom=${data}`;
-  };
-
-  const handleCopyLink = () => {
-    const link = generateLink();
-    navigator.clipboard.writeText(link);
+    return `http://wesleykamau.com/memorymap/?custom=${data}`;
   };
 
   return (

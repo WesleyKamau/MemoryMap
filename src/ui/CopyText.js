@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { initCopyClipboards } from 'flowbite';
+// import { initCopyClipboards } from 'flowbite';
 
 function CopyText({ text }) {
     useEffect(() => {
         // Initialize the copy to clipboard functionality
-        initCopyClipboards();
+        // initCopyClipboards();
 
         const clipboardButton = document.querySelector('[data-copy-to-clipboard-target="npm-install-copy-text"]');
         const defaultMessage = document.getElementById('default-message');

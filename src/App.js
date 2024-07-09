@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Game from './Game';
 import CustomGamePage from './custom/CustomGamePage';
 import LoadingScreen from './LoadingScreen';
@@ -10,6 +10,7 @@ import { ThreeDots } from 'react-loader-spinner';
 function App() {
   const [loading, setLoading] = useState(true);
   const [custom, setCustom] = useState(null);
+  const [vantaColors, setVantaColors] = useState([process.env.REACT_APP_VANTA_HIGHLIGHT,process.env.REACT_APP_VANTA_MIDTONE,process.env.REACT_APP_VANTA_LOWLIGHT]);
 
   useEffect(() => {
     const location = window.location;
@@ -23,6 +24,7 @@ function App() {
           const response = await axios.get(`https://memorymap-4ed7565da8e8.herokuapp.com/game/${customID}`);
           const receivedGameData = response.data;
           setCustom(receivedGameData);
+          setVantaColors(receivedGameData.vantaColors);
           console.log("received", receivedGameData);
         } else {
           console.log("No customID provided in URL.");
@@ -54,9 +56,9 @@ function App() {
     ) : (
       <Router basename="/memorymap">
           <Routes>
-            <Route path="/" element={<LoadingScreen custom={custom} />} />
-            <Route path="game/" element={<Game custom={custom} />} />
-            <Route path="custom/" element={<CustomGamePage />} />
+            <Route path="/" element={<LoadingScreen custom={custom} colors={vantaColors}/>} />
+            <Route path="game/" element={<Game custom={custom} colors={vantaColors}/>} />
+            <Route path="custom/" element={<CustomGamePage colors={vantaColors} />} />
           </Routes>
         </Router>
       )}

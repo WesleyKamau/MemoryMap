@@ -34,7 +34,7 @@ const markerSize = {
   height: 120 , // Adjust the height of the marker
 };
 
-function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustomGame}) {
+function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustomGame, leftButton, rightButton}) {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });

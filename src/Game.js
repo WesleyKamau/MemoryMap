@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Scoreboard from './Scoreboard';
-import SwitchViewButton from './ui/SwitchViewButton';
-import SubmitGuessButton from './ui/SubmitGuessButton';
+import LeftButton from './ui/LeftButton';
+import RightButton from './ui/RightButton';
 import ContinueButton from './ui/ContinueButton';
 import ImageView from './ImageView';
 import MapView from './MapView';
 import data from './images.json';
 import GameOverScreen from './GameOverScreen'; // Import the GameOverScreen component
 import scoreData from './scores.json'; // Import the JSON file
-import axios from 'axios';
-import { Buffer } from 'buffer';
 
-function Game({custom}) {
+function Game({custom,colors}) {
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(0); // State for the current level
+  const [imgLevel, setImgLevel] = useState(0); // State for the current level
   const [isMapView, setIsMapView] = useState(false); // State for toggling between image and map views
   const [guessSubmitted, setGuessSubmitted] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null); // State to store selected location from MapView
@@ -22,7 +21,6 @@ function Game({custom}) {
   const [gameData, setGameData] = useState(data);
   const [currentLevelData, setCurrentLevelData] = useState(null);
   const [currentImage, setCurrentImage] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const switchView = () => {
     setIsMapView(prevIsMapView => !prevIsMapView); // Toggle between image and map views
@@ -31,14 +29,14 @@ function Game({custom}) {
   useEffect(() => {
     if( custom ) {
       setGameData(custom.images);
-      setCurrentLevelData(custom.images[level]);
-      setCurrentImage("https://memorymap-4ed7565da8e8.herokuapp.com/image/" + custom.images[level].fileId);
+      setCurrentLevelData(custom.images[imgLevel]);
+      setCurrentImage("https://memorymap-4ed7565da8e8.herokuapp.com/image/" + custom.images[imgLevel].fileId);
     } else {
       setGameData(data);
-      setCurrentLevelData(data[level]);
-      setCurrentImage(data[level].filename);
+      setCurrentLevelData(data[imgLevel]);
+      setCurrentImage(data[imgLevel].filename);
     }
-  }, []);
+  }, [imgLevel, custom]);
 
   
 
@@ -145,6 +143,8 @@ function Game({custom}) {
       // Calculate score and show street view
       calculateScore();
 
+      setImgLevel(prevLevel => prevLevel + 1);
+
       setGuessSubmitted(true);
     }
   };
@@ -157,15 +157,6 @@ function Game({custom}) {
       setGuessSubmitted(false); // Reset guessSubmitted state
       setSelectedLocation(null);
       setSecondMarkerPosition(null);
-      if( custom ) {
-        setGameData(custom.images);
-        setCurrentLevelData(custom.images[level]);
-        setCurrentImage("https://memorymap-4ed7565da8e8.herokuapp.com/image/" + custom.images[level].fileId);
-      } else {
-        setGameData(data);
-        setCurrentLevelData(data[level]);
-        setCurrentImage(data[level].filename);
-      }
     } else {
       gameOver(); // Call gameOver function if there are no more levels
     }
@@ -188,12 +179,13 @@ function Game({custom}) {
     <div style={{ width: '100vw', height: '100vh' }}> {/* Set parent div dimensions */}
       {isGameOver ? (
         // Render GameOverScreen component if game is over
-          <GameOverScreen score={score} custom={custom}/>
+          <GameOverScreen score={score} colors={colors}/>
         ) : (
           <>
             <Scoreboard 
               score={score} 
               level={level} 
+              colors={colors}
               totalLevels={gameData.length} 
               positionClasses={isMapView ? 'absolute top-4 right-4 md:absolute md:top-4 md:left-1/2 md:transform md:-translate-x-1/2' : 'absolute top-4 left-1/2 transform -translate-x-1/2'} 
             />
@@ -201,9 +193,9 @@ function Game({custom}) {
               <ImageView image={currentImage} isVisible={!isMapView} />
               <MapView onLocationSelected={setSelectedLocation} secondMarkerPosition={secondMarkerPosition} isVisible={isMapView} />
             </div>
-            {!guessSubmitted && <SwitchViewButton onClick={switchView} />}
-            {!guessSubmitted && <SubmitGuessButton onClick={submitGuess} />}
-            {guessSubmitted && <ContinueButton onClick={continueToNextLevel} />}
+            {!guessSubmitted && <LeftButton onClick={switchView} colors={colors} text={'Switch View'}/>}
+            {!guessSubmitted && <RightButton onClick={submitGuess} colors={colors} text={'Submit Guess'}/>}
+            {guessSubmitted && <ContinueButton onClick={continueToNextLevel} colors={colors}/>}
           </>
       )}
     </div>

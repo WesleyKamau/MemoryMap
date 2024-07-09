@@ -1,18 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
-import { ThreeDots } from 'react-loader-spinner';
 
-const LoadingScreen = ({ custom }) => {
+const LoadingScreen = ({ custom, colors }) => {
   const navigate = useNavigate();
   const vantaRef = useRef(null);
-  const [vantaEffect, setVantaEffect] = useState(['#ff0077', '#841e10', '#ff00d1']);
 
-  useEffect(() => {
-    if (custom) {
-      setVantaEffect(custom.vantaColors);
-    }
-  }, []);
 
   useEffect(() => {
     const loadVanta = () => {
@@ -24,14 +16,16 @@ const LoadingScreen = ({ custom }) => {
           gyroControls: false,
           minHeight: 200.00,
           minWidth: 200.00,
-          highlightColor: vantaEffect[0],
-          midtoneColor: vantaEffect[1],
-          lowlightColor: vantaEffect[2],
+          highlightColor: colors[0],
+          midtoneColor: colors[1],
+          lowlightColor: colors[2],
         });
       }
     };
 
-    if (vantaEffect && window.VANTA) {
+    console.log(colors);
+
+    if (colors && window.VANTA) {
       loadVanta();
     } else {
       const script = document.createElement('script');
@@ -45,7 +39,7 @@ const LoadingScreen = ({ custom }) => {
         vantaRef.current.vantaEffect.destroy();
       }
     };
-  }, [vantaEffect]);
+  });
 
   const handleStart = () => {
     navigate('/game' + (custom ? `?custom=${custom.gameId}` : ''));
@@ -54,16 +48,27 @@ const LoadingScreen = ({ custom }) => {
   return (
     <>
       <div className="loading-container flex flex-col items-center justify-center min-h-screen w-full z--4">
-        <h1 className="text-white text-4xl md:text-6xl lg:text-8xl font-bold mb-4 md:mb-6 lg:mb-8 text-center px-2">
+        <h1 className="bg-black bg-opacity-70 py-8 px-4 rounded-lg text-white text-4xl md:text-6xl lg:text-8xl font-bold mb-4 md:mb-6 lg:mb-8 text-center px-2">
           MemoryMap
         </h1>
 
         <div className="text-center bg-black bg-opacity-70 p-4 md:p-6 lg:p-8 rounded-lg shadow-lg max-w-[85%]">
-          <h2 className="text-white text-lg md:text-2xl lg:text-4xl mb-4">
+          <h2 className="text-white text-md md:text-xl lg:text-2xl mb-4">
             {custom ?
               <>
               {custom.menuMessage.length !== 0 ? 
-              custom.menuMessage :
+              <>
+                Custom message: <br /> <br />
+                <blockquote>
+                  {custom.menuMessage} 
+                </blockquote>
+                
+                <br /> <br />
+
+                You'll first be shown a photo, then you can switch between views to select where the photo was taken on the map. <br />
+                When you're confident in your answer, press the "Submit Guess" button. You'll be given a score based on how close you were.<br />
+              </>
+              :
               <>
                 This game was custom created for you! <br />
                 You'll first be shown a photo, then you can switch between views to select where the photo was taken on the map. <br />
@@ -86,14 +91,15 @@ const LoadingScreen = ({ custom }) => {
           <button
             onClick={handleStart}
             className="px-3 py-2 md:px-4 md:py-2 lg:px-6 lg:py-3 text-4xl text-white font-semibold rounded-lg shadow-md hover:bg-pink-600 transition duration-300"
-            style={{ backgroundColor: `${vantaEffect[0].toString(16)}` }}
+            style={{ backgroundColor: `${colors[0].toString(16)}` }}
           >
             Start!
           </button>
         </div>
         {!custom ? (
           <Link to="/custom">
-            <button className="px-3 py-2 md:px-4 md:py-2 lg:px-6 lg:py-3 bg-pink-500 text-4xl text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300">
+            <button className="px-3 py-2 md:px-4 md:py-2 lg:px-6 lg:py-3 bg-pink-500 text-4xl text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+            style={{ backgroundColor: `${colors[0].toString(16)}` }}>
               Create Custom Game
             </button>
           </Link>

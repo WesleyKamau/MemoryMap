@@ -1,7 +1,7 @@
 // SwitchViewButton.js
 import React from 'react';
 
-function SwitchViewButton({ onClick }) {
+function LeftButton({ text, onClick }) {
   return (
     <button
       onClick={onClick}
@@ -9,9 +9,9 @@ function SwitchViewButton({ onClick }) {
       md:text-2xl  md:py-8 md:px-8 md:max-w-[50%] lg:text-5xl lg:max-w-[100%] text-center max-w-[25%]"
       style={{ position: 'fixed', bottom: '25px', left: '25px' }}
     >
-      Switch View
+      {text}
     </button>
   );
 }
 
-export default SwitchViewButton;
+export default LeftButton;

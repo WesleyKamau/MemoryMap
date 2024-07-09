@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import MapView from '../MapView';
 import ImageView from '../ImageView';
-import SwitchViewButton from '../ui/SwitchViewButton';
-import SubmitGuessButton from '../ui/SubmitGuessButton';
+import LeftButton from '../ui/LeftButton';
+import RightButton from '../ui/RightButton';
 import CustomLevelProgress from './CustomLevelProgress';
 
 const LocationSelectionStep = ({ metadata, setMetadata, completeStep }) => {
@@ -17,10 +17,6 @@ const LocationSelectionStep = ({ metadata, setMetadata, completeStep }) => {
 
   const switchView = () => {
     setIsMapView(prevIsMapView => !prevIsMapView); // Toggle between image and map views
-  };
-
-  const handleLocationSelect = (location) => {
-    setSelectedLocation(location);
   };
 
   const handleSubmit = () => {
@@ -56,10 +52,10 @@ const LocationSelectionStep = ({ metadata, setMetadata, completeStep }) => {
       />
       <div style={{ position: 'relative', width: '100vw', height: '100vh' }}> {/* Adjust height as needed */}
         <ImageView image={URL.createObjectURL(metadata[currentIndex].file)} isVisible={!isMapView} />
-        <MapView onLocationSelected={setSelectedLocation}  isVisible={isMapView} />
+        <MapView onLocationSelected={setSelectedLocation}  isVisible={isMapView}  />
       </div>
-        <SwitchViewButton onClick={switchView} />
-        <SubmitGuessButton onClick={handleSubmit} />
+        <LeftButton onClick={switchView} text={"Switch View"} />
+        <RightButton onClick={handleSubmit} text={"Submit Location"}/>
     </div>
   );
 };

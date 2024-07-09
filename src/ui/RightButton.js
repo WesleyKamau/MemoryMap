@@ -1,7 +1,7 @@
 // SubmitGuessButton.js
 import React from 'react';
 
-function SubmitGuessButton({ onClick }) {
+function RightButton({ text, onClick }) {
   return (
     <button
       onClick={onClick}
@@ -9,9 +9,9 @@ function SubmitGuessButton({ onClick }) {
                 md:text-2xl  md:py-8 md:px-8 md:max-w-[50%] lg:text-5xl lg:max-w-[100%] text-center max-w-[25%]"
       style={{ position: 'fixed', bottom: '25px', right: '25px' }}          
     >
-      Submit Guess
+      {text}
     </button>
   );
 }
 
-export default SubmitGuessButton;
+export default RightButton;
