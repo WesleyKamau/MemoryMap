@@ -8,7 +8,7 @@ const pin = "pins/pin.png" // Add the path to the star image
 
 const defaultMapOptions = {
   center: { lat: 39.9612, lng: -82.9988 }, // Columbus, Ohio
-  zoom: 12,
+  zoom: 22,
 };
 
 const customMapStyles = [

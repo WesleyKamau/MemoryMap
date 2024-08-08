@@ -7,7 +7,7 @@ import CustomizationStep from './CustomizationStep';
 import ExifReader from 'exifreader';
 import axios from 'axios';
 import CopyLinkStep from './CopyLinkStep';
-import { Button, Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
+import { Button, Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 
 const CustomGamePage = ({colors}) => {
   const [step, setStep] = useState(1);
@@ -20,8 +20,10 @@ const CustomGamePage = ({colors}) => {
   const [buttonColor, setButtonColor] = useState(colors[0]);
   const vantaRef = useRef(null);
   const [hasNullLocation,setHasNullLocation] = useState(false);
-  const [customLink, setCustomLink] = useState(null); // Use state variable
-  let [isOpen, setIsOpen] = useState(false);
+  const [customLink, setCustomLink] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     setProgress(step);
@@ -54,10 +56,8 @@ const CustomGamePage = ({colors}) => {
           script.onload = loadVanta;
           document.body.appendChild(script);
         }
-
       }
     };
-  
     initializeVanta();
   }, [vanta]);
 
@@ -69,7 +69,7 @@ const CustomGamePage = ({colors}) => {
     if(step === 3 && !hasNullLocation) {
         setStep(1);
     } else {
-    setStep(prev => prev - 1);
+        setStep(prev => prev - 1);
     }
   };
 
@@ -82,8 +82,7 @@ const CustomGamePage = ({colors}) => {
   const extractMetadata = (files) => {
     const metaDataArray = [];
     let currentHasNullLocation = false;
-  
-    // Map each file to an array of promises
+
     const promises = files.map(file =>
       ExifReader.load(file, { expanded: true })
         .then(result => {
@@ -101,51 +100,47 @@ const CustomGamePage = ({colors}) => {
             latitude: null,
             longitude: null,
           });
-          currentHasNullLocation = true; // Set flag if metadata is null
+          currentHasNullLocation = true; 
         })
     );
-  
-    // Wait for all promises to settle
+
     Promise.all(promises).then(() => {
       console.log("Metadata Array:", metaDataArray);
       setMetadata(metaDataArray);
-      setHasNullLocation(currentHasNullLocation)
+      setHasNullLocation(currentHasNullLocation);
       console.log("Has Null Location:", currentHasNullLocation);
       if (currentHasNullLocation) {
-        // setShowMap(true);
         setIsOpen(true);
-        // setStep(2); // Move to location selection step
       } else {
-        // If all metadata is available, move to next step
-         setStep(3);
+        setStep(3);
       }
     });
   };
-  
 
   const handleCreateGame = async () => {
+    setIsCreating(true); // Start loading state
     const formData = new FormData();
     images.forEach((image, index) => {
       console.log(`Appending image: ${image.name}`);
       formData.append('images', image, image.name);
     });
-
-    setProgress(3.25)
   
+    setProgress(3.25);
+    
     const metadataArray = metadata.map((data) => ({
       latitude: data.latitude,
       longitude: data.longitude
     }));
-
-    setProgress(3.5)
   
+    setProgress(3.5);
+    
     formData.append('vantaColors', JSON.stringify(vanta));
     formData.append('menuMessage', loadingMessage);
     formData.append('creator', creator);
     formData.append('metadata', JSON.stringify(metadataArray));
-
-    setProgress(3.75)
   
+    setProgress(3.75);
+    
     try {
       console.log('Sending form data to server');
       const response = await axios.post('https://memorymap-4ed7565da8e8.herokuapp.com/upload', formData, {
@@ -153,20 +148,31 @@ const CustomGamePage = ({colors}) => {
           'Content-Type': 'multipart/form-data'
         }
       });
-
-      setProgress(3.95)
   
+      setProgress(3.95);
       console.log('Game created:', response.data); 
-      console.log(response.data)
+      console.log(response.data);
       setCustomLink(response.data); 
-      nextStep();
+      
+      setButtonColor(colors[0]); // Reset button color
+      setIsCreating(false); // End loading state
+      
+      // Wait 0.5 seconds before moving to next step
+      setTimeout(() => {
+        nextStep();
+      }, 500);
     } catch (error) {
       console.error('Error creating game:', error);
+      setError(error);
+      setLoadingMessage('Error creating game. Please see the message below.');
+      setButtonColor(colors[0]); // Reset button color
+      setIsCreating(false); // End loading state
+      setIsOpen(true); // Show error popup
     }
   };
 
   function close() {
-    setIsOpen(false)
+    setIsOpen(false);
   }
 
   const renderStep = () => {
@@ -174,8 +180,7 @@ const CustomGamePage = ({colors}) => {
       case 1:
         return (
           <>
-          {isOpen && (
-            <>
+            {isOpen && (
               <Transition appear show={isOpen}>
                 <Dialog as="div" className="relative z-10 focus:outline-none" onClose={close}>
                   <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -213,60 +218,75 @@ const CustomGamePage = ({colors}) => {
                   </div>
                 </Dialog>
               </Transition>
+            )}
+            <>
+              <ProgressBar step={progress} />
+              <FileUploadStep handleFileChange={handleFileChange} />
             </>
-          )}
-          <>
-            <ProgressBar step={progress} />
-            <FileUploadStep handleFileChange={handleFileChange} />
-            {/* {step > 1 && (
-              <button onClick={prevStep} className="px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition duration-300 mt-4">
-                Back
-              </button>
-            )} */}
           </>
-        </>
-      );
-      case 2:
-        return (
-              <div>
-                <LocationSelectionStep
-                metadata={metadata}
-                setMetadata={setMetadata}
-                completeStep={nextStep}
-                />
-              </div>
-            );
+        );
       case 3:
         return (
-              <>
-                  <ProgressBar step={progress} />
-                  <CustomizationStep
-                  setLoadingMessage={setLoadingMessage}
-                  setCreator={setCreator}
-                  vanta={vanta}
-                  setVanta={setVanta}
-                  buttonColor={buttonColor}
-                  setButtonColor={setButtonColor}
-                  handleCreateGame={handleCreateGame}
-                  />
-                  {/* <button onClick={prevStep} className="px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition duration-300 mt-4">
-                      Back
-                  </button> */}
-          </>
-          // <CustomizationStep
-          //   loadingMessage={loadingMessage}
-          //   setLoadingMessage={setLoadingMessage}
-          //   vantaColor={vantaColor}
-          //   setVantaColor={setVantaColor}
-          //   handleCreateGame={handleCreateGame}
-          // />
-        );
-      case 4: // 3. Add a new case for the CopyLinkStep
-        return (
-            <div className="z-50">
+          <>
+            {isOpen && (
+              <Transition appear show={isOpen}>
+                <Dialog as="div" className="relative z-10 focus:outline-none" onClose={close}>
+                  <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+                    <div className="flex min-h-full items-center justify-center p-4">
+                      <TransitionChild
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0 transform-[scale(95%)]"
+                        enterTo="opacity-100 transform-[scale(100%)]"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100 transform-[scale(100%)]"
+                        leaveTo="opacity-0 transform-[scale(95%)]"
+                      >
+                        <DialogPanel className="w-full max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl">
+                          <DialogTitle as="h3" className="text-base/7 font-medium text-white">
+                            There was an error. Please screenshot this message and send it to Wesley.
+                          </DialogTitle>
+                          <p className="mt-2 text-sm/6 text-white/50">
+                            {error?.message}
+                          </p>
+                          <p className="mt-2 text-sm/6 text-red-400">
+                            {error?.stack || "An unexpected error occurred."}
+                          </p>
+                          <div className="mt-4">
+                            <Button
+                              className="inline-flex items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white"
+                              onClick={close}
+                            >
+                              Close
+                            </Button>
+                          </div>
+                        </DialogPanel>
+                      </TransitionChild>
+                    </div>
+                  </div>
+                </Dialog>
+              </Transition>
+            )}
+            <>
               <ProgressBar step={progress} />
-              <CopyLinkStep data={customLink} /> {/* Pass data to the CopyLinkStep */}
-            </div>
+              <CustomizationStep
+                setLoadingMessage={setLoadingMessage}
+                setCreator={setCreator}
+                vanta={vanta}
+                setVanta={setVanta}
+                buttonColor={buttonColor}
+                setButtonColor={setButtonColor}
+                handleCreateGame={handleCreateGame}
+                isCreating={isCreating}
+              />
+            </>
+          </>
+        );
+      case 4:
+        return (
+          <div className="z-50">
+            <ProgressBar step={progress} />
+            <CopyLinkStep data={customLink} />
+          </div>
         );
       default:
         // Do Nothing
@@ -291,19 +311,14 @@ const CustomGamePage = ({colors}) => {
           You can also play the game yourself by clicking the link. I'll add a leaderboard later.
         </>
     }
-  }
-
+  };
 
   return (
     <>
-      <div ref={vantaRef} className="absolute flex flex-col items-center justify-center min-h-screen w-full h-full -z-50"></div>
+      {step !== 2 && <div ref={vantaRef} className="absolute flex flex-col items-center justify-center min-h-screen w-full h-full -z-50"></div>}
       <div className="flex flex-col items-center justify-center min-h-screen w-full h-full z-10">
         <div className={step === 2 ? '' : 'flow-root max-w-[85%] bg-gray-900 bg-opacity-50 rounded-lg p-6 w-full max-w-3xl' }>
           {renderStep()}
-          {step > 2 && <button onClick={prevStep} className="float-left px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition duration-300 mt-4"
-          style={{ backgroundColor: `${buttonColor.toString(16)}` }}>
-            Back
-          </button>}
           {step !== 2 && step !== 4 &&
           <button onClick={() => {
             if(images.length > 0) {
@@ -311,13 +326,17 @@ const CustomGamePage = ({colors}) => {
                 console.log("Moving to step 3!")
                 console.log(hasNullLocation)
                 setStep(3)
-              } else if (!(step === 3 && !customLink)) {
+              } else if (step === 3) {
+                handleCreateGame()
+              } else {
                 nextStep()
               }
             }
           }} 
-          className="float-right px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition duration-300 mt-4"
-          style={{ backgroundColor: `${buttonColor.toString(16)}` }}>
+          className={`float-right px-4 py-2 font-semibold rounded-lg shadow-md transition duration-300 mt-4 ${
+            isCreating ? 'bg-gray-400' : 'bg-gray-500 hover:bg-gray-600 text-white'
+          }`}
+          style={{ backgroundColor: isCreating ? '#cccccc' : `${buttonColor.toString(16)}` }}>
             Next
           </button>}
         </div>
@@ -328,7 +347,6 @@ const CustomGamePage = ({colors}) => {
       </div>
     </>
   );  
-
 };
 
 export default CustomGamePage;

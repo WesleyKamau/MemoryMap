@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CustomizationStep = ({ setLoadingMessage, setCreator, vanta, setVanta, handleCreateGame, buttonColor, setButtonColor }) => {
+const CustomizationStep = ({ setLoadingMessage, setCreator, vanta, setVanta }) => {
   return (
     <div className="step step-3">
       <h1 className="text-sm md:text-xl lg:text-2xl text-white font-bold mb-3">Customize Loading Screen</h1>
@@ -44,15 +44,6 @@ const CustomizationStep = ({ setLoadingMessage, setCreator, vanta, setVanta, han
           type="color"
           value={vanta[2]}
           onChange={(e) => setVanta([vanta[0],vanta[1],e.target.value])}
-          className="w-full lg:h-10 h-8 px-3 py-2 border rounded-lg"
-        />
-      </div>
-      <div className="mb-3">
-        <label className="block text-gray-300 font-semibold mb-2">Button Color</label>
-        <input
-          type="color"
-          value={buttonColor}
-          onChange={(e) => setButtonColor(e.target.value)}
           className="w-full lg:h-10 h-8 px-3 py-2 border rounded-lg"
         />
       </div>
