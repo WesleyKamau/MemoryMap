@@ -54,7 +54,7 @@ function App() {
         />
       </div>
     ) : (
-      <Router basename="/memorymap">
+      <Router basename="memorymap">
           <Routes>
             <Route path="/" element={<LoadingScreen custom={custom} colors={vantaColors}/>} />
             <Route path="game/" element={<Game custom={custom} colors={vantaColors}/>} />

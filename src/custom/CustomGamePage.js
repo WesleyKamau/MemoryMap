@@ -19,7 +19,7 @@ const CustomGamePage = ({colors}) => {
   const [vanta, setVanta] = useState(colors);
   const [buttonColor, setButtonColor] = useState(colors[0]);
   const vantaRef = useRef(null);
-  let hasNullLocation = false;
+  const [hasNullLocation,setHasNullLocation] = useState(false);
   const [customLink, setCustomLink] = useState(null); // Use state variable
   let [isOpen, setIsOpen] = useState(false);
 
@@ -74,13 +74,14 @@ const CustomGamePage = ({colors}) => {
   };
 
   const handleFileChange = (files) => {
+    console.log("Handle File Change called.")
     setImages(files);
     extractMetadata(files);
   };
 
   const extractMetadata = (files) => {
     const metaDataArray = [];
-    hasNullLocation = false;
+    let currentHasNullLocation = false;
   
     // Map each file to an array of promises
     const promises = files.map(file =>
@@ -100,7 +101,7 @@ const CustomGamePage = ({colors}) => {
             latitude: null,
             longitude: null,
           });
-          hasNullLocation = true; // Set flag if metadata is null
+          currentHasNullLocation = true; // Set flag if metadata is null
         })
     );
   
@@ -108,8 +109,9 @@ const CustomGamePage = ({colors}) => {
     Promise.all(promises).then(() => {
       console.log("Metadata Array:", metaDataArray);
       setMetadata(metaDataArray);
-      console.log("Has Null Location:", hasNullLocation);
-      if (hasNullLocation) {
+      setHasNullLocation(currentHasNullLocation)
+      console.log("Has Null Location:", currentHasNullLocation);
+      if (currentHasNullLocation) {
         // setShowMap(true);
         setIsOpen(true);
         // setStep(2); // Move to location selection step
@@ -296,7 +298,7 @@ const CustomGamePage = ({colors}) => {
     <>
       <div ref={vantaRef} className="absolute flex flex-col items-center justify-center min-h-screen w-full h-full -z-50"></div>
       <div className="flex flex-col items-center justify-center min-h-screen w-full h-full z-10">
-        <div className={step === 2 ? '' : 'flow-root bg-gray-900 bg-opacity-50 rounded-lg p-6 w-full max-w-3xl' }>
+        <div className={step === 2 ? '' : 'flow-root max-w-[85%] bg-gray-900 bg-opacity-50 rounded-lg p-6 w-full max-w-3xl' }>
           {renderStep()}
           {step > 2 && <button onClick={prevStep} className="float-left px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition duration-300 mt-4"
           style={{ backgroundColor: `${buttonColor.toString(16)}` }}>
@@ -306,6 +308,8 @@ const CustomGamePage = ({colors}) => {
           <button onClick={() => {
             if(images.length > 0) {
               if(step === 1 && !hasNullLocation){
+                console.log("Moving to step 3!")
+                console.log(hasNullLocation)
                 setStep(3)
               } else if (!(step === 3 && !customLink)) {
                 nextStep()
@@ -318,7 +322,7 @@ const CustomGamePage = ({colors}) => {
           </button>}
         </div>
         {step !== 2 &&
-        <h1 className="text-center bg-gray-900 bg-opacity-70 p-4 md:p-6 lg:p-8 rounded-lg shadow-lg max-w-[85%] text-white text-md md:text-lg lg:text-xl">
+        <h1 className="text-center bg-gray-900 bg-opacity-70 p-4 md:p-6 lg:p-8 rounded-lg shadow-lg max-w-[85%] text-white text-xs md:text-xl">
           {tip()}
         </h1>}
       </div>

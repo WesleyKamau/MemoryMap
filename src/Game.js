@@ -143,7 +143,11 @@ function Game({custom,colors}) {
       // Calculate score and show street view
       calculateScore();
 
-      setImgLevel(prevLevel => prevLevel + 1);
+      if (level < gameData.length - 1) {
+        setImgLevel(prevLevel => prevLevel + 1);
+      } else {
+        gameOver();
+      }
 
       setGuessSubmitted(true);
     }

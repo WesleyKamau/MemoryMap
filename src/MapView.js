@@ -3,8 +3,8 @@ import { GoogleMap, Marker, Polyline, useJsApiLoader, Circle, OverlayView } from
 import scoresData from './scores.json';
 import ToggleLandmarksButton from './ui/ToggleLandmarksButton';
 
-const starImage = "pins/starpin.png"; // Add the path to the star image
-const haileyImages = ["pins/hailey1.png", "pins/hailey2.png", "pins/hailey3.png"]; // Add the path to the star image
+const starpin = "pins/starpin.png"; // Add the path to the star image
+const pin = "pins/pin.png" // Add the path to the star image
 
 const defaultMapOptions = {
   center: { lat: 39.9612, lng: -82.9988 }, // Columbus, Ohio
@@ -30,8 +30,8 @@ const customMapStyles = [
 ];
 
 const markerSize = {
-  width: 75 , // Adjust the width of the marker
-  height: 120 , // Adjust the height of the marker
+  width: 55 , // Adjust the width of the marker
+  height: 95 , // Adjust the height of the marker
 };
 
 function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustomGame, leftButton, rightButton}) {
@@ -41,7 +41,6 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustom
 
   const [showLandmarks, setShowLandmarks] = useState(true);
   const [markerPosition, setMarkerPosition] = useState(null);
-  const [icon, setIcon] = useState(0);
   const [showPath, setShowPath] = useState(true);
   const [showOverlays, setShowOverlays] = useState(false);
   const mapRef = useRef(null);
@@ -62,7 +61,6 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustom
 
   const handleMapClick = (e) => {
     if (!showPath) {
-      setIcon(Math.floor(Math.random() * haileyImages.length));
       setMarkerPosition({
         lat: e.latLng.lat(),
         lng: e.latLng.lng(),
@@ -108,7 +106,7 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustom
               <Marker
                 position={markerPosition}
                 icon={{
-                  url: haileyImages[icon],
+                  url: pin,
                   scaledSize: markerSize, // Set the size of the marker
                 }}
               />
@@ -118,7 +116,7 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustom
                 <Marker
                   position={secondMarkerPosition}
                   icon={{
-                    url: starImage,
+                    url: starpin,
                     scaledSize: markerSize, // Set the size of the marker
                   }}
                   key={secondMarkerPosition}

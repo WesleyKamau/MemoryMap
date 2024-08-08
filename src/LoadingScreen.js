@@ -48,12 +48,12 @@ const LoadingScreen = ({ custom, colors }) => {
   return (
     <>
       <div className="loading-container flex flex-col items-center justify-center min-h-screen w-full z--4">
-        <h1 className="bg-black bg-opacity-70 py-8 px-4 rounded-lg text-white text-4xl md:text-6xl lg:text-8xl font-bold mb-4 md:mb-6 lg:mb-8 text-center px-2">
+        <h1 className="bg-black bg-opacity-70 px-2 py-4 lg:py-8 lg:px-4 rounded-lg text-white text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 lg:mb-8 text-center px-2">
           MemoryMap
         </h1>
 
         <div className="text-center bg-black bg-opacity-70 p-4 md:p-6 lg:p-8 rounded-lg shadow-lg max-w-[85%]">
-          <h2 className="text-white text-md md:text-xl lg:text-2xl mb-4">
+          <h2 className="text-white text-sm md:text-xl lg:text-2xl mb-4">
             {custom ?
               <>
               {custom.menuMessage.length !== 0 ? 
@@ -90,7 +90,7 @@ const LoadingScreen = ({ custom, colors }) => {
           </h2>
           <button
             onClick={handleStart}
-            className="px-3 py-2 md:px-4 md:py-2 lg:px-6 lg:py-3 text-4xl text-white font-semibold rounded-lg shadow-md hover:bg-pink-600 transition duration-300"
+            className="px-3 py-2 md:px-4 md:py-2 lg:px-6 lg:py-3 text-2xl md:text-3xl lg:text-4xl text-white font-semibold rounded-lg shadow-md hover:bg-pink-600 transition duration-300"
             style={{ backgroundColor: `${colors[0].toString(16)}` }}
           >
             Start!
@@ -98,7 +98,7 @@ const LoadingScreen = ({ custom, colors }) => {
         </div>
         {!custom ? (
           <Link to="/custom">
-            <button className="px-3 py-2 md:px-4 md:py-2 lg:px-6 lg:py-3 bg-pink-500 text-4xl text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+            <button className="px-3 py-2 md:px-4 md:py-2 lg:px-6 lg:py-3 bg-pink-500 text-2xl md:text-3xl lg:text-4xl text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
             style={{ backgroundColor: `${colors[0].toString(16)}` }}>
               Create Custom Game
             </button>
@@ -106,12 +106,12 @@ const LoadingScreen = ({ custom, colors }) => {
         ) :
         <>
           {custom.creator && (
-          <h1 className="text-center bg-black bg-opacity-70 p-4 md:p-6 lg:p-8 rounded-lg shadow-lg max-w-[85%] text-white text-lg md:text-2xl lg:text-4xl mb-4">
+          <h1 className="text-center bg-black bg-opacity-70 p-2 md:p-6 lg:p-8 rounded-lg shadow-lg max-w-[85%] text-white text-lg md:text-2xl lg:text-4xl mb-1">
             This custom game was created by {custom.creator}! <br />
           </h1>)}
         </>
         }
-        <h1 className="text-center bg-black bg-opacity-70 p-4 md:p-6 lg:p-8 rounded-lg shadow-lg max-w-[85%] text-white text-md md:text-xl lg:text-3xl mb-4">
+        <h1 className="text-center bg-black bg-opacity-70 p-2 md:p-6 lg:p-8 rounded-lg shadow-lg max-w-[85%] text-white text-md md:text-xl lg:text-3xl mb-1">
           This game was made with love by Wesley Kamau.
         </h1>
       </div>
