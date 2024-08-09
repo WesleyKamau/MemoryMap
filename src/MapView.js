@@ -6,40 +6,39 @@ import ToggleLandmarksButton from './ui/ToggleLandmarksButton';
 const starpin = "pins/starpin.png"; // Add the path to the star image
 const pin = "pins/pin.png" // Add the path to the star image
 
-const defaultMapOptions = {
-  center: { lat: 39.9612, lng: -82.9988 }, // Columbus, Ohio
-  zoom: 22,
-};
 
-const customMapStyles = [
-  {
-    featureType: 'poi',
-    elementType: 'labels',
-    stylers: [{ visibility: 'off' }],
-  },
-  {
-    featureType: 'transit',
-    elementType: 'labels.icon',
-    stylers: [{ visibility: 'off' }],
-  },
-  {
-    featureType: 'administrative',
-    elementType: 'labels',
-    stylers: [{ visibility: 'off' }],
-  },
-];
+
 
 const markerSize = {
   width: 55 , // Adjust the width of the marker
   height: 95 , // Adjust the height of the marker
 };
 
-function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustomGame, leftButton, rightButton}) {
+function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustomGame, mapOptions, inCustom}) {
+
+  const customMapStyles = [
+    {
+      featureType: 'poi',
+      elementType: 'labels',
+      stylers: [{ visibility: inCustom ? 'on' : 'off' }],
+    },
+    {
+      featureType: 'transit',
+      elementType: 'labels.icon',
+      stylers: [{ visibility: 'off' }],
+    },
+    {
+      featureType: 'administrative',
+      elementType: 'labels',
+      stylers: [{ visibility: 'off' }],
+    },
+  ];
+
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
 
-  const [showLandmarks, setShowLandmarks] = useState(true);
+  const [showLandmarks, setShowLandmarks] = useState(false);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [showPath, setShowPath] = useState(true);
   const [showOverlays, setShowOverlays] = useState(false);
@@ -77,7 +76,7 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustom
     if (mapRef.current) {
       const zoomLevel = mapRef.current.getZoom();
       console.log('Zoom Level:', zoomLevel);
-      setShowOverlays(zoomLevel >= 16); // Adjust the zoom level condition as needed
+      setShowOverlays(zoomLevel >= 15); // Adjust the zoom level condition as needed
     }
     console.log("showPath: ", showPath, "showOverlays: ", showOverlays);
   };
@@ -91,8 +90,8 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustom
         <>
           <GoogleMap
             mapContainerStyle={{ width: '100%', height: '100%' }}
-            center={defaultMapOptions.center}
-            zoom={defaultMapOptions.zoom}
+            center={mapOptions.center}
+            zoom={mapOptions.zoom}
             options={{
               styles: showLandmarks ? customMapStyles : [],
               mapTypeControl: true,

@@ -5,6 +5,11 @@ import LeftButton from '../ui/LeftButton';
 import RightButton from '../ui/RightButton';
 import CustomLevelProgress from './CustomLevelProgress';
 
+const mapOptions = {
+  center: { lat: 39.9612, lng: -82.9988 }, // Columbus, Ohio
+  zoom: 8,
+};
+
 const LocationSelectionStep = ({ metadata, setMetadata, completeStep }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -52,7 +57,7 @@ const LocationSelectionStep = ({ metadata, setMetadata, completeStep }) => {
       />
       <div style={{ position: 'relative', width: '100vw', height: '100vh' }}> {/* Adjust height as needed */}
         <ImageView image={URL.createObjectURL(metadata[currentIndex].file)} isVisible={!isMapView} />
-        <MapView onLocationSelected={setSelectedLocation}  isVisible={isMapView}  />
+        <MapView onLocationSelected={setSelectedLocation}  isVisible={isMapView}  mapOptions={mapOptions} inCustom={true}/>
       </div>
         <LeftButton onClick={switchView} text={"Switch View"} />
         <RightButton onClick={handleSubmit} text={"Submit Location"}/>

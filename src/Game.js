@@ -9,7 +9,7 @@ import data from './images.json';
 import GameOverScreen from './GameOverScreen'; // Import the GameOverScreen component
 import scoreData from './scores.json'; // Import the JSON file
 
-function Game({custom,colors}) {
+function Game({custom, colors}) {
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(0); // State for the current level
   const [imgLevel, setImgLevel] = useState(0); // State for the current level
@@ -18,16 +18,21 @@ function Game({custom,colors}) {
   const [selectedLocation, setSelectedLocation] = useState(null); // State to store selected location from MapView
   const [secondMarkerPosition, setSecondMarkerPosition] = useState(null);
   const [isGameOver, setGameOver] = useState(false); // Track game over state
+  const [showContinue, setShowContinue] = useState(false); // Track game over state
   const [gameData, setGameData] = useState(data);
   const [currentLevelData, setCurrentLevelData] = useState(null);
   const [currentImage, setCurrentImage] = useState(null);
+  const [mapOptions, setMapOptions] = useState({
+    center: { lat: 39.9612, lng: -82.9988 },
+    zoom: 11,
+  });
 
   const switchView = () => {
     setIsMapView(prevIsMapView => !prevIsMapView); // Toggle between image and map views
   };
 
   useEffect(() => {
-    if( custom ) {
+    if (custom) {
       setGameData(custom.images);
       setCurrentLevelData(custom.images[imgLevel]);
       setCurrentImage("https://memorymap-4ed7565da8e8.herokuapp.com/image/" + custom.images[imgLevel].fileId);
@@ -38,49 +43,21 @@ function Game({custom,colors}) {
     }
   }, [imgLevel, custom]);
 
-  
+  useEffect(() => {
+    if (gameData.length > 0) {
+      const latitudes = gameData.map(item => item.latitude).filter(lat => lat != null);
+      const longitudes = gameData.map(item => item.longitude).filter(lng => lng != null);
 
-  // useEffect(() => {
-  //   let audio = new Audio('music.mp3');
-  //   audio.loop = true; // Loop the music
-  //   audio.volume = 0; // Start volume at 0
-
-  //   const increaseVolume = () => {
-  //     let volume = 0;
-  //     const interval = setInterval(() => {
-  //       volume += 0.004; // Increase volume by 0.004 every second
-  //       if (volume >= 0.3) {
-  //         volume = 0.3;
-  //         clearInterval(interval);
-  //       }
-  //       audio.volume = volume;
-  //     }, 1000);
-  //   };
-
-  //   const playAudio = () => {
-  //     audio.play().then(() => {
-  //       increaseVolume();
-  //     }).catch(error => {
-  //       console.error('Audio playback failed:', error);
-  //     });
-  //   };
-
-  //   // Attach event listener for user interaction
-  //   const handleUserInteraction = () => {
-  //     playAudio();
-  //     document.removeEventListener('click', handleUserInteraction);
-  //   };
-
-  //   document.addEventListener('click', handleUserInteraction);
-
-  //   return () => {
-  //     if (audio) {
-  //       audio.pause();
-  //       audio = null;
-  //     }
-  //     document.removeEventListener('click', handleUserInteraction);
-  //   };
-  // }, []);
+      if (latitudes.length > 0 && longitudes.length > 0) {
+        const averageLat = latitudes.reduce((acc, lat) => acc + lat, 0) / latitudes.length;
+        const averageLng = longitudes.reduce((acc, lng) => acc + lng, 0) / longitudes.length;
+        setMapOptions(prevOptions => ({
+          ...prevOptions,
+          center: { lat: averageLat, lng: averageLng },
+        }));
+      }
+    }
+  }, [gameData]);
 
   const calculateScore = () => {
     if (selectedLocation) {
@@ -143,13 +120,19 @@ function Game({custom,colors}) {
       // Calculate score and show street view
       calculateScore();
 
+      console.log(level)
+
       if (level < gameData.length - 1) {
+        console.log("Next Level");
         setImgLevel(prevLevel => prevLevel + 1);
       } else {
-        gameOver();
+        console.log("Game Over");
+        setShowContinue(true); // Call gameOver function if there are no more levels
       }
 
       setGuessSubmitted(true);
+    } else {
+      console.log('Null selected location');
     }
   };
 
@@ -162,7 +145,8 @@ function Game({custom,colors}) {
       setSelectedLocation(null);
       setSecondMarkerPosition(null);
     } else {
-      gameOver(); // Call gameOver function if there are no more levels
+      setGuessSubmitted(false);
+      setShowContinue(true); // Call gameOver function if there are no more levels
     }
   };
 
@@ -195,16 +179,15 @@ function Game({custom,colors}) {
             />
             <div style={{ position: 'relative', width: '100%', height: '100%' }}> {/* Adjust height as needed */}
               <ImageView image={currentImage} isVisible={!isMapView} />
-              <MapView onLocationSelected={setSelectedLocation} secondMarkerPosition={secondMarkerPosition} isVisible={isMapView} />
+              <MapView onLocationSelected={setSelectedLocation} secondMarkerPosition={secondMarkerPosition} isVisible={isMapView} mapOptions={mapOptions} />
             </div>
             {!guessSubmitted && <LeftButton onClick={switchView} colors={colors} text={'Switch View'}/>}
             {!guessSubmitted && <RightButton onClick={submitGuess} colors={colors} text={'Submit Guess'}/>}
-            {guessSubmitted && <ContinueButton onClick={continueToNextLevel} colors={colors}/>}
+            {showContinue && <ContinueButton onClick={gameOver} colors={colors}/>}
           </>
       )}
     </div>
   );
 }
-
 
 export default Game;

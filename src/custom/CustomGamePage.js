@@ -225,6 +225,16 @@ const CustomGamePage = ({colors}) => {
             </>
           </>
         );
+      case 2:
+          return (
+            <div>
+              <LocationSelectionStep
+                metadata={metadata}
+                setMetadata={setMetadata}
+                completeStep={nextStep}
+              />
+            </div>
+          );
       case 3:
         return (
           <>
