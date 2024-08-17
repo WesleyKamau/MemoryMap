@@ -12,7 +12,7 @@ import scoreData from './scores.json'; // Import the JSON file
 function Game({custom, colors}) {
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(0); // State for the current level
-  const [imgLevel, setImgLevel] = useState(0); // State for the current level
+  // const [imgLevel, setImgLevel] = useState(0); // State for the current level
   const [isMapView, setIsMapView] = useState(false); // State for toggling between image and map views
   const [guessSubmitted, setGuessSubmitted] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null); // State to store selected location from MapView
@@ -34,14 +34,14 @@ function Game({custom, colors}) {
   useEffect(() => {
     if (custom) {
       setGameData(custom.images);
-      setCurrentLevelData(custom.images[imgLevel]);
-      setCurrentImage("https://memorymap-4ed7565da8e8.herokuapp.com/image/" + custom.images[imgLevel].fileId);
+      setCurrentLevelData(custom.images[level]);
+      setCurrentImage("https://memorymap-4ed7565da8e8.herokuapp.com/image/" + custom.images[level].fileId);
     } else {
       setGameData(data);
-      setCurrentLevelData(data[imgLevel]);
-      setCurrentImage(data[imgLevel].filename);
+      setCurrentLevelData(data[level]);
+      setCurrentImage(data[level].filename);
     }
-  }, [imgLevel, custom]);
+  }, [level, custom]);
 
   useEffect(() => {
     if (gameData.length > 0) {
@@ -120,34 +120,44 @@ function Game({custom, colors}) {
       // Calculate score and show street view
       calculateScore();
 
-      console.log(level)
+      console.log(gameData)
+
+      // if (level < gameData.length - 1) {
+      //   console.log("Next Level");
+      //   setImgLevel(prevLevel => prevLevel + 1);
+      // } else {
+      //   console.log("Game Over");
+      //   setShowContinue(true); // Call gameOver function if there are no more levels
+      // }
+
+      // continueToNextLevel();
 
       if (level < gameData.length - 1) {
-        console.log("Next Level");
-        setImgLevel(prevLevel => prevLevel + 1);
-      } else {
-        console.log("Game Over");
-        setShowContinue(true); // Call gameOver function if there are no more levels
+        setLevel(prevLevel => prevLevel + 1);
       }
 
       setGuessSubmitted(true);
+      setShowContinue(true);
     } else {
       console.log('Null selected location');
     }
   };
 
-  const continueToNextLevel = () => {
+  // 
+
+  const clickContinue = () => {
     // If there are more levels, increment the level state
+    setShowContinue(false);
     if (level < gameData.length - 1) {
-      setLevel(prevLevel => prevLevel + 1);
+      // setLevel(prevLevel => prevLevel + 1);
       setIsMapView(false); // Reset view to image
-      setGuessSubmitted(false); // Reset guessSubmitted state
       setSelectedLocation(null);
       setSecondMarkerPosition(null);
     } else {
-      setGuessSubmitted(false);
-      setShowContinue(true); // Call gameOver function if there are no more levels
+      gameOver();
+      // setShowContinue(true); // Call gameOver function if there are no more levels
     }
+    setGuessSubmitted(false);
   };
 
   const gameOver = () => {
@@ -183,7 +193,7 @@ function Game({custom, colors}) {
             </div>
             {!guessSubmitted && <LeftButton onClick={switchView} colors={colors} text={'Switch View'}/>}
             {!guessSubmitted && <RightButton onClick={submitGuess} colors={colors} text={'Submit Guess'}/>}
-            {showContinue && <ContinueButton onClick={gameOver} colors={colors}/>}
+            {showContinue && <ContinueButton onClick={clickContinue} colors={colors}/>}
           </>
       )}
     </div>

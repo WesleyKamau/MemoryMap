@@ -3,7 +3,7 @@ import React from 'react';
 const CustomizationStep = ({ setLoadingMessage, setCreator, vanta, setVanta }) => {
   return (
     <div className="step step-3">
-      <h1 className="text-sm md:text-xl lg:text-2xl text-white font-bold mb-3">Customize Loading Screen</h1>
+      <h1 className="text-sm md:text-2xl lg:text-2xl text-white font-bold mb-3">Customize Loading Screen</h1>
       <div className="mb-3">
         <label className="block text-gray-300 font-semibold mb-2">Your Name</label>
         <input

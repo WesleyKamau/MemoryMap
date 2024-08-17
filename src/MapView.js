@@ -145,7 +145,7 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustom
                     return (
                       <>
                         <Circle
-                          key={distanceData.value}
+                          key={index}
                           center={secondMarkerPosition}
                           radius={distanceFromMarker}
                           options={{
@@ -159,11 +159,11 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustom
                         />
                         {showPath && showOverlays && (
                           <OverlayView
-                            key={`overlay-${distanceData.score}`}
+                            key={`overlay-${index}`}
                             position={position}
                             mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                           >
-                            <div style={{ color: '#FF69B4', fontWeight: 'bold', fontSize: '16px', padding: '8px' }}>{distanceData.score} points</div>
+                            <div key={`div-${index}`} style={{ color: '#FF69B4', fontWeight: 'bold', fontSize: '16px', padding: '8px' }}>{distanceData.score} points</div>
                           </OverlayView>
                         )}
                       </>
