@@ -1,4 +1,3 @@
-// SwitchViewButton.js
 import React from 'react';
 
 function LeftButton({ text, onClick }) {

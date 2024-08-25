@@ -7,6 +7,7 @@ import './App.css';
 import axios from 'axios';
 import { ThreeDots } from 'react-loader-spinner';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
+import Login from './admin/login';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -69,6 +70,7 @@ function App() {
               <Route path="/" element={<LoadingScreen custom={custom} colors={vantaColors} />} />
               <Route path="game/" element={<Game custom={custom} colors={vantaColors} />} />
               <Route path="custom/" element={<CustomGamePage colors={vantaColors} />} />
+              <Route path="admin/" element={<Login vanta={vantaColors} custom={custom} />} />
             </Routes>
           </Router> 
           {isErrorOpen && (

@@ -66,13 +66,13 @@ const CustomGamePage = ({colors}) => {
     setStep(prev => prev + 1);
   };
 
-  const prevStep = () => {
-    if(step === 3 && !hasNullLocation) {
-        setStep(1);
-    } else {
-        setStep(prev => prev - 1);
-    }
-  };
+  // const prevStep = () => {
+  //   if(step === 3 && !hasNullLocation) {
+  //       setStep(1);
+  //   } else {
+  //       setStep(prev => prev - 1);
+  //   }
+  // };
 
   const handleFileChange = (files) => {
     console.log("Handle File Change called.")
@@ -200,7 +200,7 @@ const CustomGamePage = ({colors}) => {
                             GPS Data Missing
                           </DialogTitle>
                           <p className="mt-2 text-sm/6 text-white/50">
-                            {nullImageCount==1 ?
+                            {nullImageCount === 1 ?
                               <>1 image had no location data.</> 
                             : 
                               <>{nullImageCount} images had no location data.</>
@@ -328,6 +328,8 @@ const CustomGamePage = ({colors}) => {
         return <>
           You can also play the game yourself by clicking the link. I'll add a leaderboard later.
         </>
+      default:
+        // Do nothing
     }
   };
 
