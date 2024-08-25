@@ -53,7 +53,7 @@ const LoadingScreen = ({ custom, colors }) => {
         </h1>
 
         <div className="text-center bg-black bg-opacity-70 p-4 md:p-6 lg:p-8 rounded-lg shadow-lg max-w-[85%]">
-          <h2 className="text-white text-sm md:text-xl lg:text-2xl mb-4">
+          <h2 className="text-white text-xs md:text-base lg:text-2xl mb-4">
             {custom ?
               <>
               {custom.menuMessage.length !== 0 ? 
@@ -82,8 +82,8 @@ const LoadingScreen = ({ custom, colors }) => {
                 I wanted to make a fun game to capture some of our memories together. <br />
                 You'll first be shown a photo, then you can switch between views to select where the photo was taken on the map. <br />
                 When you're confident in your answer, press the "Submit Guess" button. You'll be given a score based on how close you were.<br />
-                I'm working on making this game publicly available, where you can submit your own photos and share a link to a custom game. <br />
-                For now, check it out! <br /> Press the button below to start.
+                {/* I'm working on making this game publicly available, where you can submit your own photos and share a link to a custom game. <br /> */}
+                For now, check it out! <br /> Press the button below to start, and the button under it if you'd like to create your own game.
                 <br /> - <i>Wesley</i>
               </>
             }

@@ -10,7 +10,7 @@ const mapOptions = {
   zoom: 8,
 };
 
-const LocationSelectionStep = ({ metadata, setMetadata, completeStep }) => {
+const LocationSelectionStep = ({ metadata, setMetadata, completeStep, nullCount }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isMapView, setIsMapView] = useState(false); // State for toggling between image and map views
@@ -52,7 +52,7 @@ const LocationSelectionStep = ({ metadata, setMetadata, completeStep }) => {
     <div style={{ width: '100vw', height: '100vh' }}> {/* Set parent div dimensions */}
       <CustomLevelProgress 
         index={currentIndex} 
-        length={metadata.length}
+        length={nullCount}
         positionClasses={isMapView ? 'absolute top-4 right-4 md:absolute md:top-4 md:left-1/2 md:transform md:-translate-x-1/2' : 'absolute top-4 left-1/2 transform -translate-x-1/2' }
       />
       <div style={{ position: 'relative', width: '100vw', height: '100vh' }}> {/* Adjust height as needed */}

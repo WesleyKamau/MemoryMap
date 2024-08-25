@@ -24,6 +24,7 @@ const CustomGamePage = ({colors}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState(null);
+  const [nullImageCount, setNullImageCount] = useState(0);
 
   useEffect(() => {
     setProgress(step);
@@ -101,6 +102,7 @@ const CustomGamePage = ({colors}) => {
             longitude: null,
           });
           currentHasNullLocation = true; 
+          setNullImageCount(nullImageCount + 1);
         })
     );
 
@@ -198,7 +200,12 @@ const CustomGamePage = ({colors}) => {
                             GPS Data Missing
                           </DialogTitle>
                           <p className="mt-2 text-sm/6 text-white/50">
-                            {"One or more of your images had no location data. You will now have to select the location of the image(s) on the map."} <br />
+                            {nullImageCount==1 ?
+                              <>1 image had no location data.</> 
+                            : 
+                              <>{nullImageCount} images had no location data.</>
+                            }
+                            You will now have to select the location of the image(s) on the map. <br />
                             First you'll be shown the photo, then you can switch between views to select where the photo was taken.
                           </p>
                           <div className="mt-4">
@@ -232,6 +239,7 @@ const CustomGamePage = ({colors}) => {
                 metadata={metadata}
                 setMetadata={setMetadata}
                 completeStep={nextStep}
+                nullCount={nullImageCount}
               />
             </div>
           );

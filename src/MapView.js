@@ -38,7 +38,7 @@ function MapView({ onLocationSelected, isVisible, secondMarkerPosition, isCustom
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
 
-  const [showLandmarks, setShowLandmarks] = useState(false);
+  const [showLandmarks, setShowLandmarks] = useState(true);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [showPath, setShowPath] = useState(true);
   const [showOverlays, setShowOverlays] = useState(false);
