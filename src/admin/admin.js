@@ -46,7 +46,7 @@ function Admin({ custom }) {
         } else {
             setCurrentImage(null);
         }
-        console.log(currentImage)
+        // console.log(currentImage)
     }, [hoveredMarkerIndex, custom, gameData]);
 
     useEffect(() => {
@@ -114,6 +114,7 @@ function Admin({ custom }) {
                                                     alt="Marker"
                                                     style={{ width: '150px', height: 'auto' }}
                                                 />
+                                                image {index} <br /> {item.latitude}, {item.longitude}
                                             </div>
                                         </OverlayView>
                                     )}

@@ -15,12 +15,16 @@ function App() {
   const [vantaColors, setVantaColors] = useState([process.env.REACT_APP_VANTA_HIGHLIGHT, process.env.REACT_APP_VANTA_MIDTONE, process.env.REACT_APP_VANTA_LOWLIGHT]);
   const [errorMessage, setErrorMessage] = useState('');
   const [isErrorOpen, setIsErrorOpen] = useState(false);
+  const [admin, setAdmin] = useState(false);
 
   useEffect(() => {
     const location = window.location;
     const params = new URLSearchParams(location.search);
     const customID = params.get('custom');
+    setAdmin(params.get('admin'));
     console.log("Getting game...", customID);
+    console.log("Getting admin...", admin);
+    
 
     const fetchData = async () => {
       try {
@@ -64,13 +68,14 @@ function App() {
           />
         </div>
       ) : (
+        admin ? <Login vanta={vantaColors} custom={custom} /> :
         <>
           <Router basename="memorymap">
             <Routes>
               <Route path="/" element={<LoadingScreen custom={custom} colors={vantaColors} />} />
               <Route path="game/" element={<Game custom={custom} colors={vantaColors} />} />
               <Route path="custom/" element={<CustomGamePage colors={vantaColors} />} />
-              <Route path="admin/" element={<Login vanta={vantaColors} custom={custom} />} />
+              {/* <Route path="admin/" element={<Login vanta={vantaColors} custom={custom} />} /> */}
             </Routes>
           </Router> 
           {isErrorOpen && (
