@@ -112,7 +112,9 @@ const LoadingScreen = ({ custom, colors }) => {
         </>
         }
         <h1 className="text-center bg-black bg-opacity-70 p-2 md:p-6 lg:p-8 rounded-lg shadow-lg max-w-[85%] text-white text-md md:text-xl lg:text-3xl mb-1">
-          This game was made with love by Wesley Kamau.
+          This game was made with love by Wesley Kamau. <br />
+          Thoroughly tested by Gabe Peters.
+
         </h1>
       </div>
       <div ref={vantaRef} className="vanta-container"></div>

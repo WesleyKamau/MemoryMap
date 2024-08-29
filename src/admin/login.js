@@ -58,7 +58,7 @@ const Login = ({vanta, custom}) => {
               <div className="mb-3">
                 <label className="block text-gray-300 font-semibold mb-2">Password</label>
                 <input
-                  type="text"
+                  type="password"
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-3 py-2 border rounded-lg"
                 />

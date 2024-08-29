@@ -34,7 +34,7 @@ function Admin({ custom }) {
 
         setTimeout(() => {
             setTriggerRender(true);
-        }, 100);
+        }, 400);
     }, [custom]);
 
     useEffect(() => {

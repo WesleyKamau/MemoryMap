@@ -12,7 +12,7 @@ import scoreData from './scores.json'; // Import the JSON file
 function Game({custom, colors}) {
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(0); // State for the current level
-  // const [imgLevel, setImgLevel] = useState(0); // State for the current level
+  const [imgLevel, setImgLevel] = useState(0); // State for the current level
   const [isMapView, setIsMapView] = useState(false); // State for toggling between image and map views
   const [guessSubmitted, setGuessSubmitted] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null); // State to store selected location from MapView
@@ -35,13 +35,14 @@ function Game({custom, colors}) {
     if (custom) {
       setGameData(custom.images);
       setCurrentLevelData(custom.images[level]);
-      setCurrentImage("https://memorymap-4ed7565da8e8.herokuapp.com/image/" + custom.images[level].fileId);
+      setCurrentImage("https://memorymap-4ed7565da8e8.herokuapp.com/image/" + custom.images[imgLevel].fileId);
     } else {
       setGameData(data);
       setCurrentLevelData(data[level]);
-      setCurrentImage(data[level].filename);
+      setCurrentImage(data[imgLevel].filename);
     }
-  }, [level, custom]);
+  }, [level, imgLevel, custom]);
+
 
   useEffect(() => {
     if (gameData.length > 0) {
@@ -133,7 +134,7 @@ function Game({custom, colors}) {
       // continueToNextLevel();
 
       if (level < gameData.length - 1) {
-        setLevel(prevLevel => prevLevel + 1);
+        setImgLevel(prevLevel => prevLevel + 1);
       }
 
       setGuessSubmitted(true);
@@ -149,7 +150,7 @@ function Game({custom, colors}) {
     // If there are more levels, increment the level state
     setShowContinue(false);
     if (level < gameData.length - 1) {
-      // setLevel(prevLevel => prevLevel + 1);
+      setLevel(prevLevel => prevLevel + 1);
       setIsMapView(false); // Reset view to image
       setSelectedLocation(null);
       setSecondMarkerPosition(null);

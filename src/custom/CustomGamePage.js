@@ -60,7 +60,7 @@ const CustomGamePage = ({colors}) => {
       }
     };
     initializeVanta();
-  }, [vanta]);
+  }, [vanta,step]);
 
   const nextStep = () => {
     setStep(prev => prev + 1);
@@ -78,6 +78,8 @@ const CustomGamePage = ({colors}) => {
     console.log("Handle File Change called.")
     setImages(files);
     extractMetadata(files);
+    console.log("Images:", files);
+    console.log("Metadata:", metadata);
   };
 
   const extractMetadata = (files) => {
@@ -102,7 +104,8 @@ const CustomGamePage = ({colors}) => {
             longitude: null,
           });
           currentHasNullLocation = true; 
-          setNullImageCount(nullImageCount + 1);
+          setNullImageCount(nullImageCount => nullImageCount + 1);
+          console.log(nullImageCount);
         })
     );
 
@@ -122,27 +125,28 @@ const CustomGamePage = ({colors}) => {
   const handleCreateGame = async () => {
     setIsCreating(true); // Start loading state
     const formData = new FormData();
-    images.forEach((image, index) => {
-      console.log(`Appending image: ${image.name}`);
-      formData.append('images', image, image.name);
+    
+    metadata.forEach((data, index) => {
+      console.log(`Appending image: ${data.file.name}`);
+      formData.append('images', data.file, data.file.name);
     });
   
     setProgress(3.25);
-    
+  
     const metadataArray = metadata.map((data) => ({
       latitude: data.latitude,
       longitude: data.longitude
     }));
   
     setProgress(3.5);
-    
+  
     formData.append('vantaColors', JSON.stringify(vanta));
     formData.append('menuMessage', loadingMessage);
     formData.append('creator', creator);
     formData.append('metadata', JSON.stringify(metadataArray));
   
     setProgress(3.75);
-    
+  
     try {
       console.log('Sending form data to server');
       const response = await axios.post('https://memorymap-4ed7565da8e8.herokuapp.com/upload', formData, {
@@ -153,13 +157,12 @@ const CustomGamePage = ({colors}) => {
   
       setProgress(3.95);
       console.log('Game created:', response.data); 
-      console.log(response.data);
       setCustomLink(response.data); 
       
       setButtonColor(colors[0]); // Reset button color
       setIsCreating(false); // End loading state
       
-      // Wait 0.5 seconds before moving to next step
+      // Wait 0.5 seconds before moving to the next step
       setTimeout(() => {
         nextStep();
       }, 500);
@@ -172,6 +175,7 @@ const CustomGamePage = ({colors}) => {
       setIsOpen(true); // Show error popup
     }
   };
+  
 
   function close() {
     setIsOpen(false);
@@ -201,9 +205,9 @@ const CustomGamePage = ({colors}) => {
                           </DialogTitle>
                           <p className="mt-2 text-sm/6 text-white/50">
                             {nullImageCount === 1 ?
-                              <>1 image had no location data.</> 
+                              <>1 image had no location data. </> 
                             : 
-                              <>{nullImageCount} images had no location data.</>
+                              <>{nullImageCount} images had no location data. </>
                             }
                             You will now have to select the location of the image(s) on the map. <br />
                             First you'll be shown the photo, then you can switch between views to select where the photo was taken.
